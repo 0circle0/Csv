@@ -75,20 +75,24 @@ namespace CsvImporter
 
         private static void ApplyHeadersToStringBuilder(List<string> headers, ref StringBuilder builder)
         {
-            for (int i = 0; i < headers.Count; i++)
+            var count = headers.Count;
+            for (int i = 0; i < count; i++)
             {
                 AddValueToStringBuilder(headers[i], ref builder);
 
-                ApplyEndCharacter(headers.Count, i, ref builder);
+                ApplyEndCharacter(count, i, ref builder);
             }
         }
 
         private static Result BuildText<T>(List<T> objects, List<string> props, ref StringBuilder builder)
         {
-            for (int i = 0; i < objects.Count; i++)
+            var objectCount = objects.Count;
+            var propsCount = props.Count;
+            for (int i = 0; i < objectCount; i++)
             {
                 var obj = objects[i];
-                for (int k = 0; k < props.Count; k++)
+                
+                for (int k = 0; k < propsCount; k++)
                 {
                     var prop = props[k];
 
@@ -98,7 +102,7 @@ namespace CsvImporter
 
                     AddValueToStringBuilder(value, ref builder);
 
-                    ApplyEndCharacter(props.Count, k, ref builder);
+                    ApplyEndCharacter(propsCount, k, ref builder);
                 }
             }
             return true;
@@ -166,7 +170,7 @@ namespace CsvImporter
                 if (assembly != null)
                     path = Path.GetDirectoryName(assembly.Location);
                 else
-                    path = Assembly.GetExecutingAssembly().GetName().Name;
+                    path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
                 if (string.IsNullOrWhiteSpace(path))
                     return "Path on fileSystem cannot be obtained. Cannot save file.";
@@ -368,7 +372,8 @@ namespace CsvImporter
         private static Result CreateObjects<T>(List<string[]> objectsData, string[] props, ref List<T> objects) where T : new()
         {
             Result result;
-            for (int i = 1; i < objectsData.Count; i++)
+            var objectsDataCount = objectsData.Count;
+            for (int i = 1; i < objectsDataCount; i++)
             {
                 result = CreateObject(objectsData[i], props, out T t);
                 if (!result)
